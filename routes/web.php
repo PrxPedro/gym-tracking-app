@@ -21,6 +21,8 @@ Route::get('/', function () {
 Route::resource('workouts', WorkoutController::class); // Handles CRUD operations for workouts
 Route::post('/workouts/{workout}/rate', [WorkoutController::class, 'rate'])->name('workouts.rate'); // Rate a workout
 Route::resource('workouts.exercises', ExerciseController::class); // Handles CRUD operations for exercises within workouts
+Route::post('/workouts/{workout}/update-sets', [WorkoutController::class, 'updateSets'])->name('workouts.updateSets');
+
 
 // Forum routes
 Route::get('/forums', [ForumController::class, 'index'])->name('forums.index'); // Shows all forums

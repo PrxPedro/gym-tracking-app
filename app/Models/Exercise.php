@@ -9,12 +9,9 @@ class Exercise extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'sets',
-        'reps',
-        'video_url', 
-    ];
+   // Exercise.php
+    protected $fillable = ['name', 'last_set_intensity', 'technique', 'warm_up_sets', 'working_sets', 'set_1', 'set_2', 'set_3', 'substitution_option_1', 'notes'];
+
     
     public function workout()
     {

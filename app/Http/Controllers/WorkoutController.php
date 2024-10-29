@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Rating; 
 use App\Models\Workout;
 use Illuminate\Http\Request;
+use App\Models\Exercise;
 
 class WorkoutController extends Controller
 {
@@ -89,6 +90,21 @@ class WorkoutController extends Controller
     ]);
 
     return redirect()->route('workouts.show', $workout)->with('success', 'Rating submitted successfully.');
+}
+
+public function updateSets(Request $request, Workout $workout)
+{
+    foreach ($request->input('sets', []) as $exerciseId => $sets) {
+        $exercise = Exercise::find($exerciseId);
+        if ($exercise) {
+            $exercise->update([
+                'set_1' => $sets['set_1'] ?? $exercise->set_1,
+                'set_2' => $sets['set_2'] ?? $exercise->set_2,
+                'set_3' => $sets['set_3'] ?? $exercise->set_3,
+            ]);
+        }
+    }
+    return back()->with('success', 'Sets updated successfully.');
 }
 
 
