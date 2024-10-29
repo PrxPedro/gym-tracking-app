@@ -15,4 +15,8 @@ class Workout extends Model
     {
         return $this->hasMany(Exercise::class);
     }
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 }

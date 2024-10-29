@@ -18,29 +18,28 @@
     <a href="{{ route('workouts.create') }}" class="mb-4 inline-block bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700">Create New Workout</a>
 
     <ul class="space-y-4">
-    @foreach ($workouts as $workout)
-        <li class="p-4 border rounded-lg bg-white dark:bg-gray-700">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                        <a href="{{ route('workouts.show', $workout) }}" class="hover:underline">
-                            {{ $workout->name }}
-                        </a>
-                    </h2>
-                    <p class="text-gray-600 dark:text-gray-400">Category: {{ $workout->category }}</p>
+        @foreach ($workouts as $workout)
+            <li class="p-4 border rounded-lg bg-white dark:bg-gray-700">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                            <a href="{{ route('workouts.show', $workout) }}" class="hover:underline">
+                                {{ $workout->name }}
+                            </a>
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400">Category: {{ $workout->category }}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="{{ route('workouts.edit', $workout) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">Edit</a>
+                        <form method="POST" action="{{ route('workouts.destroy', $workout) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">Delete</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="flex gap-2">
-                    <a href="{{ route('workouts.edit', $workout) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">Edit</a>
-                    <form method="POST" action="{{ route('workouts.destroy', $workout) }}">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">Delete</button>
-                    </form>
-                </div>
-            </div>
-        </li>
-    @endforeach
-</ul>
-
+            </li>
+        @endforeach
+    </ul>
 </div>
 @endsection

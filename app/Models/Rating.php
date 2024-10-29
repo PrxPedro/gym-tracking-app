@@ -5,17 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Exercise extends Model
+class Rating extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'sets',
-        'reps',
-        'video_url', 
-    ];
-    
+    protected $fillable = ['workout_id', 'rating'];
+
     public function workout()
     {
         return $this->belongsTo(Workout::class);
