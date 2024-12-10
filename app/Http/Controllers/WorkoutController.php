@@ -10,27 +10,26 @@ class WorkoutController extends Controller
 {
     public function index(Request $request)
     {
-        $searchTerm = $request->input('search');
-        $category = $request->input('category');
-    
-        $query = Workout::query(); // Start a query builder for workouts
-    
-        // Search by name if a search term is provided
-        if ($searchTerm) {
-            $query->where('name', 'like', '%' . $searchTerm . '%');
+        $query = Workout::query();
+
+        // Advanced search/filter options
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->input('search') . '%');
         }
-    
-        // Filter by category if a category is selected
-        if ($category) {
-            $query->where('category', $category);
+
+        if ($request->filled('category')) {
+            $query->where('category', $request->input('category'));
         }
-    
-        // Get the workouts
-        $workouts = $query->get();
-    
+
+        if ($request->filled('difficulty')) {
+            $query->where('difficulty', $request->input('difficulty'));
+        }
+
+        // Pagination
+        $workouts = $query->paginate(10);
+
         return view('workouts.index', compact('workouts'));
     }
-    
 
     public function create() {
         return view('workouts.create'); // Return the view for creating a workout
@@ -43,17 +42,24 @@ class WorkoutController extends Controller
         }
 
 
-    public function store(Request $request) {
-        // Validate and store the workout
-        $request->validate([
-            'name' => 'required',
-            'category' => 'required',
-            'description' => 'nullable',
-        ]);
-        
-        Workout::create($request->all());
-        return redirect()->route('workouts.index')->with('success', 'Workout created successfully.');
-    }
+        public function store(Request $request)
+        {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'category' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'difficulty' => 'required|string|in:Easy,Medium,Hard',
+            ]);
+    
+            Workout::create([
+                'name' => $request->name,
+                'category' => $request->category,
+                'description' => $request->description,
+                'difficulty' => $request->difficulty,
+            ]);
+    
+            return redirect()->route('workouts.index')->with('success', 'Workout created successfully.');
+        }
 
     public function edit(Workout $workout)
     {

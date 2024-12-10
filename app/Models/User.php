@@ -3,12 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+
+
+use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
+    
     use HasFactory, Notifiable;
 
     /**
@@ -20,7 +26,21 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'notifications_enabled',
+        'role',
     ];
+    public function posts()
+    {
+        return $this->hasMany(Post::class); // Assuming your Post model is in the default namespace
+    }
+    public function profile()
+{
+    return $this->hasOne(Profile::class);
+}
+public function messages()
+{
+    return $this->hasMany(Message::class, 'sender_id');
+}
 
     /**
      * The attributes that should be hidden for serialization.
@@ -31,7 +51,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
     /**
      * Get the attributes that should be cast.
      *
@@ -42,6 +61,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notifications_enabled' => 'boolean',
         ];
     }
 }

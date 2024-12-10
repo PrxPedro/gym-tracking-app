@@ -4,7 +4,14 @@
 <div class="container mx-auto p-6">
     <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-4">{{ $workout->name }}</h1>
     <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">{{ $workout->description }}</p>
-
+  <!-- Display Average Rating -->
+  @if ($workout->ratings && $workout->ratings->count() > 0)
+        <h3 class="text-lg mt-6 text-gray-800 dark:text-gray-200 flex justify-end" >Average Rating: 
+            <span class="text-yellow-500">{{ number_format($workout->ratings->average('rating'), 1) }} Stars</span>
+        </h3>
+    @else
+        <p class="text-gray-600 dark:text-gray-400 mt-4 flex justify-end">No ratings available for this workout.</p>
+    @endif
     <!-- Instructional Video Section for Workout -->
     @if($workout->video_url)
         <div class="mb-6">
@@ -28,8 +35,8 @@
                             <th class="py-3 px-4">Exercise</th>
                             <th class="py-3 px-4">Last-Set Intensity</th>
                             <th class="py-3 px-4">Technique</th>
-                            <th class="py-3 px-4">Warm-up Sets</th>
                             <th class="py-3 px-4">Working Sets</th>
+                            <th class="py-3 px-4">Reps per Set</th>
                             <th class="py-3 px-4">Set 1</th>
                             <th class="py-3 px-4">Set 2</th>
                             <th class="py-3 px-4">Set 3</th>
@@ -49,8 +56,8 @@
                                 </td>
                                 <td class="py-4 px-4">{{ $exercise->last_set_intensity ?? 'N/A' }}</td>
                                 <td class="py-4 px-4">{{ $exercise->technique ?? 'N/A' }}</td>
-                                <td class="py-4 px-4">{{ $exercise->warm_up_sets ?? 'N/A' }}</td>
-                                <td class="py-4 px-4">{{ $exercise->working_sets ?? 'N/A' }}</td>
+                                <td class="py-4 px-4">{{ $exercise->sets ?? 'N/A' }}</td>
+                                <td class="py-4 px-4">{{ $exercise->reps ?? 'N/A' }}</td>
                                 <td class="py-4 px-4"><input type="number" name="sets[{{ $exercise->id }}][set_1]" value="{{ $exercise->set_1 }}" class="border rounded p-2 w-full dark:bg-gray-800 dark:text-gray-200"></td>
                                 <td class="py-4 px-4"><input type="number" name="sets[{{ $exercise->id }}][set_2]" value="{{ $exercise->set_2 }}" class="border rounded p-2 w-full dark:bg-gray-800 dark:text-gray-200"></td>
                                 <td class="py-4 px-4"><input type="number" name="sets[{{ $exercise->id }}][set_3]" value="{{ $exercise->set_3 }}" class="border rounded p-2 w-full dark:bg-gray-800 dark:text-gray-200"></td>
@@ -77,24 +84,27 @@
         </div>
     </div>
 
-    <!-- Add New Workout Section -->
-    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mt-6 mb-2">Create New Workout:</h2>
-    <form method="POST" action="{{ route('workouts.store') }}" class="mt-4 bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
-        @csrf
-        <div class="mb-4">
-            <label for="name" class="block text-gray-800 dark:text-gray-200">Workout Name:</label>
-            <input type="text" name="name" required class="border rounded-lg p-2 w-full dark:bg-gray-800 dark:text-gray-200">
-        </div>
-        <div class="mb-4">
-            <label for="description" class="block text-gray-800 dark:text-gray-200">Description:</label>
-            <textarea name="description" required class="border rounded-lg p-2 w-full dark:bg-gray-800 dark:text-gray-200"></textarea>
-        </div>
-        <div class="mb-4">
-            <label for="video_url" class="block text-gray-800 dark:text-gray-200">Instructional Video URL:</label>
-            <input type="url" name="video_url" class="border rounded-lg p-2 w-full dark:bg-gray-800 dark:text-gray-200">
-        </div>
-        <button type="submit" class="mt-4 bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700">Create Workout</button>
-    </form>
+  <!-- Add New Workout Section -->
+    @if (auth()->check() && auth()->user()->role === 'admin')
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mt-6 mb-2">Create New Workout:</h2>
+        <form method="POST" action="{{ route('workouts.store') }}" class="mt-4 bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
+            @csrf
+            <div class="mb-4">
+                <label for="name" class="block text-gray-800 dark:text-gray-200">Workout Name:</label>
+                <input type="text" name="name" required class="border rounded-lg p-2 w-full dark:bg-gray-800 dark:text-gray-200">
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-gray-800 dark:text-gray-200">Description:</label>
+                <textarea name="description" required class="border rounded-lg p-2 w-full dark:bg-gray-800 dark:text-gray-200"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="video_url" class="block text-gray-800 dark:text-gray-200">Instructional Video URL:</label>
+                <input type="url" name="video_url" class="border rounded-lg p-2 w-full dark:bg-gray-800 dark:text-gray-200">
+            </div>
+            <button type="submit" class="mt-4 bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700">Create Workout</button>
+        </form>
+    @endif
+
 
     <!-- Rating Section -->
     <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mt-6 mb-2">Rate this Workout:</h2>
@@ -114,13 +124,6 @@
         <button type="submit" class="mt-2 bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700">Submit Rating</button>
     </form>
 
-    <!-- Display Average Rating -->
-    @if ($workout->ratings && $workout->ratings->count() > 0)
-        <h3 class="text-lg mt-6 text-gray-800 dark:text-gray-200">Average Rating: 
-            <span class="text-yellow-500">{{ number_format($workout->ratings->average('rating'), 1) }} Stars</span>
-        </h3>
-    @else
-        <p class="text-gray-600 dark:text-gray-400 mt-4">No ratings available for this workout.</p>
-    @endif
+  
 </div>
 @endsection

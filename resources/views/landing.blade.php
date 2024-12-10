@@ -1,19 +1,37 @@
+
 @extends('layouts.app')
 
 @section('content')
-<div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-900 via-gray-900 to-indigo-700">
     <div class="text-center">
-        <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-4">Welcome to the Gym Tracking App!</h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">Track your workouts, manage your fitness progress, and connect with others.</p>
+        <!-- Welcome Heading -->
+        <h1 class="text-[16rem] font-extrabold text-white mb-12 tracking-wide leading-tight">
+            Welcome to <span class="text-blue-400">Gym Tracking App</span>!
+        </h1>
+        
+        <!-- Description -->
+        <p class="text-[8rem] text-gray-300 mb-16 leading-relaxed">
+            Track your workouts and manage your fitness progress with ease.
+        </p>
 
+        <!-- Call-to-Action Button -->
         @if (Route::has('login'))
-            <div class="mt-4">
+            <div class="mt-8">
                 @auth
-                    <a href="{{ url('/workouts') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Workouts</a>
+                    <a href="{{ url('/workouts') }}" 
+                       class="px-16 py-8 bg-blue-500 text-white text-[4rem] font-semibold rounded-full shadow-lg hover:bg-blue-400 transition-all duration-300">
+                        Go to Workouts
+                    </a>
                 @else
-                    <a href="{{ route('login') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Login</a>
+                    <a href="{{ route('login') }}" 
+                       class="px-16 py-8 bg-green-500 text-white text-[4rem] font-semibold rounded-full shadow-lg hover:bg-green-400 transition-all duration-300">
+                        Login
+                    </a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ml-2">Sign Up</a>
+                        <a href="{{ route('register') }}" 
+                           class="px-16 py-8 bg-purple-500 text-white text-[4rem] font-semibold rounded-full shadow-lg hover:bg-purple-400 transition-all duration-300 ml-6">
+                            Sign Up
+                        </a>
                     @endif
                 @endauth
             </div>
